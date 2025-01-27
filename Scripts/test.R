@@ -55,5 +55,13 @@ ggplot(Literacy.dt, aes(x= Period, color = Code)) +
 
 ggplot(filter(Literacy.dt, !is.nan(Literacy)), aes(x= Period, color = Code)) +
   geom_line(aes(y = Literacy))
-  
+
+
+## Correlation Literacy and homosexual couples good parents...
+LiteracyTolerance.dt <- filter(big.table, Period == "2020-2024") %>% group_by(Code) %>% summarize(Literacy = mean(`Literacy rate`, na.rm = T), Tolerance = mean(`Homosexual couples are as good parents as other couples: Agree (aggregate)`, na.rm = T)) %>%  ungroup()
+
+
+ggplot(LiteracyTolerance.dt, aes(x= Literacy, y = Tolerance, color = Code)) +
+  geom_point()
+
 
