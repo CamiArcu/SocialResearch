@@ -1,0 +1,36 @@
+{
+  "chart": {
+    "title": "Employment discrimination based on sexual orientation or gender identity",
+    "subtitle": "Includes discrimination in hiring, promotion, termination and harassment at work. Only legal status considered, not enforcement.",
+    "citation": "Equaldex (2024)",
+    "originalChartUrl": "https://ourworldindata.org/grapher/employment-discrimination-lgbt-equaldex?v=1&csvType=full&useColumnShortNames=false",
+    "selection": [
+      "Niger",
+      "Costa Rica",
+      "Christmas Island",
+      "Yemen"
+    ]
+  },
+  "columns": {
+    "LGBT+ employment discrimination (historical)": {
+      "titleShort": "Employment discrimination based on sexual orientation or gender identity prohibited",
+      "titleLong": "Employment discrimination based on sexual orientation or gender identity prohibited",
+      "descriptionShort": "Describes the prohibition of discrimination based on sexual orientation and/or gender identity in employment, including hiring, promotion, termination, harassment, etc.",
+      "descriptionKey": [],
+      "descriptionProcessing": "- We have extracted the data from the official [Equaldex JSON API](https://equaldex.stoplight.io/docs/equaldex/d033e28a5cf0c-equaldex-json-api).\n- We combine the historical and current data extracted from the API to create a time series.\n- Whenever policy implementation dates for a status are not provided in the data, and this status is the only available for the country, we consider that this status has not changed during the entire period of the dataset.\n- We group some of the categories the source has defined for each issue, for further clarity in our visualizations.\n- We present this data only for sovereign states, defined by [Butcher and Griffiths (2020)](https://ourworldindata.org/grapher/sovereign-state-butcher-griffiths). We use the definitions of the latest year available.",
+      "shortUnit": "",
+      "unit": "",
+      "timespan": "1950-2024",
+      "type": "Ordinal",
+      "owidVariableId": 931771,
+      "shortName": "employment_discrimination",
+      "lastUpdated": "2024-06-03",
+      "nextUpdate": "2025-06-03",
+      "citationShort": "Equaldex (2024) – with major processing by Our World in Data",
+      "citationLong": "Equaldex (2024) – with major processing by Our World in Data. “Employment discrimination based on sexual orientation or gender identity prohibited” [dataset]. Equaldex, “Equaldex” [original data].",
+      "fullMetadata": "https://api.ourworldindata.org/v1/indicators/931771.metadata.json"
+    }
+  },
+  "dateDownloaded": "2025-01-26",
+  "activeFilters": {}
+}

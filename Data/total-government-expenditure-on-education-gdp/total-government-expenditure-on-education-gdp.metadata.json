@@ -1,0 +1,41 @@
+{
+  "chart": {
+    "title": "Public spending on education as a share of GDP",
+    "subtitle": "Total general government expenditure on education (all levels of government and all levels of education), given as a share of GDP.",
+    "citation": "World Bank (2024); Tanzi & Schuknecht (2000)",
+    "originalChartUrl": "https://ourworldindata.org/grapher/total-government-expenditure-on-education-gdp?v=1&csvType=full&useColumnShortNames=false",
+    "selection": [
+      "Malawi",
+      "Congo",
+      "Belarus",
+      "United States",
+      "United Kingdom",
+      "Israel",
+      "Spain",
+      "France",
+      "Norway"
+    ]
+  },
+  "columns": {
+    "Public spending on education as a share of GDP": {
+      "titleShort": "Public spending on education as a share of GDP",
+      "titleLong": "Public spending on education as a share of GDP",
+      "descriptionShort": "Total general government expenditure on education (all levels of government and all levels of education), given as a share of GDP.",
+      "descriptionKey": [],
+      "descriptionProcessing": "**Historical expenditure data:**\n\nHistorical data in this dataset is based on a wide array of sources, reflecting a comprehensive approach to data collection across different time periods and regions. However, the diverse nature of these sources leads to inconsistencies, as methodologies and data quality vary between sources. For instance, older sources like the League of Nations Statistical Yearbook or Mitchell's 1962 data may use different metrics or collection methods compared to more modern sources like the OECD Education reports or UN surveys. This variance in source material and methodology means that direct comparisons across different years or countries might be challenging, necessitating careful interpretation and cross-reference for accuracy. The dataset serves as a rich historical repository but also underscores the complexities and challenges inherent in compiling and harmonizing historical data from multiple, diverse sources.\n\n**Recent estimates:**\n\nGeneral government expenditure on education (current, capital, and transfers) is expressed as a percentage of GDP. It includes expenditure funded by transfers from international sources to government. General government usually refers to local, regional and central governments.\n\nWorld Bank variable id: SE.XPD.TOTL.GD.ZS\n\nOriginal source: UNESCO Institute for Statistics (UIS). UIS.Stat Bulk Data Download Service. Accessed October 24, 2022.",
+      "shortUnit": "%",
+      "unit": "%",
+      "timespan": "1870-2023",
+      "type": "Numeric",
+      "owidVariableId": 998325,
+      "shortName": "combined_expenditure",
+      "lastUpdated": "2024-11-04",
+      "nextUpdate": "2025-11-03",
+      "citationShort": "World Bank (2024); Tanzi & Schuknecht (2000) – processed by Our World in Data",
+      "citationLong": "World Bank (2024); Tanzi & Schuknecht (2000) – processed by Our World in Data. “Public spending on education as a share of GDP” [dataset]. World Bank, “World Bank Education Statistics (EdStats)”; Tanzi & Schuknecht, “Public Expenditure on Education OECD” [original data].",
+      "fullMetadata": "https://api.ourworldindata.org/v1/indicators/998325.metadata.json"
+    }
+  },
+  "dateDownloaded": "2025-01-27",
+  "activeFilters": {}
+}

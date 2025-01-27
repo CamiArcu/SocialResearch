@@ -1,0 +1,36 @@
+{
+  "chart": {
+    "title": "Rigorous and impartial public administration index",
+    "subtitle": "Based on the expert estimates and index by [V-Dem](#dod:v-dem). It captures the extent to which public officials respect the law, and administer it without arbitrariness and bias. Higher scores mean more rigor and impartiality.",
+    "citation": "V-Dem (2024)",
+    "originalChartUrl": "https://ourworldindata.org/grapher/rigorous-and-impartial-public-administration-index?v=1&csvType=full&useColumnShortNames=false",
+    "selection": [
+      "World",
+      "Argentina",
+      "Australia",
+      "Botswana",
+      "China"
+    ]
+  },
+  "columns": {
+    "Rigorous and impartial public administration (best estimate, aggregate: average)": {
+      "titleShort": "Rigorous and impartial public administration",
+      "titleLong": "Rigorous and impartial public administration - (best estimate, aggregate: average)",
+      "descriptionShort": "Best estimate of the extent to which public officials respect the law, and administer it without arbitrariness and bias.",
+      "descriptionKey": [],
+      "descriptionProcessing": "The regional aggregates (including values for the World) have been estimated by averaging the country values.",
+      "unit": "",
+      "timespan": "1789-2023",
+      "type": "Numeric",
+      "owidVariableId": 900055,
+      "shortName": "public_admin_vdem__estimate_best__aggregate_method_average",
+      "lastUpdated": "2024-03-07",
+      "nextUpdate": "2025-03-07",
+      "citationShort": "V-Dem (2024) – processed by Our World in Data",
+      "citationLong": "V-Dem (2024) – processed by Our World in Data. “Rigorous and impartial public administration – (best estimate, aggregate: average)” [dataset]. V-Dem, “V-Dem Country-Year (Full + Others) v14” [original data].",
+      "fullMetadata": "https://api.ourworldindata.org/v1/indicators/900055.metadata.json"
+    }
+  },
+  "dateDownloaded": "2025-01-27",
+  "activeFilters": {}
+}

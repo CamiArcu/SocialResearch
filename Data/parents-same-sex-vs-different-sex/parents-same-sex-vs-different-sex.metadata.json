@@ -1,0 +1,56 @@
+{
+  "chart": {
+    "title": "Share of people who think homosexual couples are as good parents as other couples",
+    "subtitle": "",
+    "note": "Agreeing here corresponds to responding \"strongly agree\" or \"agree\" to the statement.",
+    "citation": "Integrated Values Surveys (2022)",
+    "originalChartUrl": "https://ourworldindata.org/grapher/parents-same-sex-vs-different-sex?v=1&csvType=full&useColumnShortNames=false",
+    "selection": [
+      "Pakistan",
+      "Russia",
+      "United States",
+      "Australia",
+      "China",
+      "South Africa",
+      "Brazil",
+      "Chile",
+      "Spain",
+      "Sweden",
+      "Iceland",
+      "France",
+      "Vietnam",
+      "Mexico",
+      "Peru",
+      "Nigeria"
+    ]
+  },
+  "columns": {
+    "Homosexual couples are as good parents as other couples: Agree (aggregate)": {
+      "titleShort": "Homosexual couples are as good parents as other couples: Agree (aggregate)",
+      "titleLong": "Homosexual couples are as good parents as other couples: Agree (aggregate)",
+      "descriptionShort": "% of respondents replying \"strongly agree\" or \"agree\" when asked \"Do you agree, disagree or neither agree nor disagree with the following statements?\" When the statement is \"Homosexual couples are as good parents as other couples\".",
+      "descriptionProcessing": "We collected the data by merging the World Values Survey and the European Values Study, following the methodology described in the [Integrated Values Surveys website](https://www.worldvaluessurvey.org/WVSEVStrend.jsp).\n\nWe processed the indicators from microdata of the Integrated Values Surveys (IVS) using Stata. Weights are applied for each country.\n\nWe calculated regional aggregations for some indicators, by weighting each country by its population size.\n",
+      "shortUnit": "%",
+      "unit": "%",
+      "timespan": "2022-2022",
+      "type": "Numeric",
+      "owidVariableId": 935623,
+      "shortName": "agree_agg_homosx_prnts",
+      "lastUpdated": "2023-11-27",
+      "nextUpdate": "2025-02-27",
+      "citationShort": "Integrated Values Surveys (2022) – with major processing by Our World in Data",
+      "citationLong": "Integrated Values Surveys (2022) – with major processing by Our World in Data. “Homosexual couples are as good parents as other couples: Agree (aggregate)” [dataset]. Integrated Values Surveys, “Integrated Values Surveys (IVS) Version 3” [original data].",
+      "fullMetadata": "https://api.ourworldindata.org/v1/indicators/935623.metadata.json"
+    },
+    "935623-annotations": {
+      "titleShort": "935623-annotations",
+      "titleLong": "935623-annotations",
+      "type": "SeriesAnnotation",
+      "citationShort": " – processed by Our World in Data",
+      "citationLong": " – processed by Our World in Data. “935623-annotations” [dataset].",
+      "fullMetadata": "https://api.ourworldindata.org/v1/indicators/undefined.metadata.json"
+    }
+  },
+  "dateDownloaded": "2025-01-27",
+  "activeFilters": {}
+}
