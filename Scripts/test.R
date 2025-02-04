@@ -123,3 +123,9 @@ p2 <- ggplot(pca_df, aes(x = PC1, y = PC2, color = Code)) +
   theme(legend.position = "none")
 
 p2 + p1
+
+# Algun grafico de barras en periodo definido que se pueda ir cambiando el periodo con la barra
+# Algun mapa de LAM coloreado por alguna variable modificable
+# alguna distribucion on ridge plot o algo asi, de por ejemplo las variables cuanti (cambiables tipo input)
+# algun clustering sobre el grafico de PCs.
+# alg'un grafico tipo venn paises en comun que comparten ... y ahi variables cuali.
