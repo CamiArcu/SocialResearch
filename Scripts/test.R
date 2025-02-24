@@ -1,8 +1,14 @@
 library(plotly)
 library(tidyverse)
 library(ggrepel)
-library(cowplot)
 library(patchwork)
+library(igraph)
+library(FNN)
+library(ggridges)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+
 
 setwd("C:/Users/Mariano/Documents/Cami/SocialResearch")
 
@@ -124,8 +130,77 @@ p2 <- ggplot(pca_df, aes(x = PC1, y = PC2, color = Code)) +
 
 p2 + p1
 
+##
+
+pca_df <- data.frame(
+  PC1 = pca_result$x[, 1],  # First principal component
+  PC2 = pca_result$x[, 2],  # Labels for coloring
+  PC3 = pca_result$x[, 3]
+)
+
+# Compute 5-NN graph
+knn_graph <- get.knn(pca_df, k = 5)$nn.index
+
+# Convert to an adjacency matrix
+adj_matrix <- matrix(0, nrow = nrow(pca_df), ncol = nrow(pca_df))
+for (i in 1:nrow(pca_df)) {
+  adj_matrix[i, knn_graph[i, ]] <- 1
+}
+
+# Create graph and apply clustering
+graph <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected")
+clusters <- cluster_louvain(graph)
+
+# Add cluster labels
+pca_df$cluster <- as.factor(membership(clusters))
+pca_df$Code <- big.table.cumsum$Code
+
+# Plot results
+p1 <- ggplot(pca_df, aes(x = PC1, y = PC2, color = cluster, label = Code)) +
+  geom_point(size = 3) +
+  labs(title = "kNN Graph-Based Clustering") +
+  geom_text_repel() +
+  theme_minimal()
+
+p2 <- ggplot(pca_df, aes(x = PC1, y = PC2, color = cluster)) +
+  geom_point(size = 3) +  # Plot points for each sample
+  geom_segment(data = loadings, 
+               aes(x = 0, y = 0, xend = PC1 * 3, yend = PC2 * 3), 
+               arrow = arrow(type = "closed", length = unit(0.02, "inches")), 
+               color = "black", size = 0.5) +  # Add arrows for loadings
+  geom_text(data = loadings, 
+            aes(x = PC1 * 3, y = PC2 * 3, label = Variable), 
+            size = 3, vjust = 0.5, hjust = 0.5, color = "black") +  # Add variable labels
+  labs(title = "PCA Biplot: PC1 vs PC2",
+       x = "Principal Component 1",
+       y = "Principal Component 2") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+p1 + p2
+
+big.table %>% filter(Period == "1950-1954") %>% 
+  select(where(is.numeric), Code) %>% 
+  pivot_longer(cols = -Code) %>%  
+ggplot(aes(x = value, y = name)) +
+  geom_density_ridges(alpha = 0.7)
+
+
+# Load world map data
+world <- ne_countries(scale = "medium", returnclass = "sf")
+latin_america_map <- world[world$name %in% big.table$Entity, ]
+
+latin_america_map <- left_join(latin_america_map, big.table, by = c("name" = "Entity"))
+
+# Plot the world map
+latin_america_map %>% filter(Period == "1950-1954") %>% 
+ggplot(aes(fill = `Rigorous and impartial public administration (best estimate, aggregate: average)`)) +
+  geom_sf(color = "black") +
+  labs(title = "World Map with ggplot2") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+
+
 # Algun grafico de barras en periodo definido que se pueda ir cambiando el periodo con la barra
-# Algun mapa de LAM coloreado por alguna variable modificable
-# alguna distribucion on ridge plot o algo asi, de por ejemplo las variables cuanti (cambiables tipo input)
-# algun clustering sobre el grafico de PCs.
 # alg'un grafico tipo venn paises en comun que comparten ... y ahi variables cuali.
