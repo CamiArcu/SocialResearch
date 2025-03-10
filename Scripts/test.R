@@ -62,8 +62,9 @@ Literacy.dt <- mutate(Literacy.dt, Period = as.numeric(str_split_i(Literacy.dt$P
 ggplot(Literacy.dt, aes(x= Period, color = Code)) +
   geom_line(aes(y = Literacy))
 
-ggplot(filter(Literacy.dt, !is.nan(Literacy)), aes(x= Period, color = Code)) +
-  geom_line(aes(y = Literacy))
+p1 <- ggplot(filter(Literacy.dt, !is.nan(Literacy)), aes(x= Period, color = Code)) +
+  geom_line(aes(y = Literacy)) +
+  theme_classic()
 
 
 ## Correlation Literacy and homosexual couples good parents...
@@ -78,7 +79,7 @@ LiteracyTolerance.dt$residuals_upper <- LiteracyTolerance.dt$predicted * exp((0.
 LiteracyTolerance.dt$residuals_lower <- LiteracyTolerance.dt$predicted * exp(-(0.03303*nrow(LiteracyTolerance.dt))^2)
 
 
-ggplot(LiteracyTolerance.dt, aes(x= Literacy, y = Tolerance, size = Education_GDP, color = Code)) +
+p2 <- ggplot(LiteracyTolerance.dt, aes(x= Literacy, y = Tolerance, size = Education_GDP, color = Code)) +
   geom_ribbon(mapping = aes(x= Literacy, ymin = residuals_lower, ymax = residuals_upper), size = 1, fill = "lightgray", color = "lightgray") +
   geom_line(mapping = aes(x= Literacy, y = predicted), size = 1, color = "black") +
   geom_point() +
@@ -99,7 +100,7 @@ pca_df <- data.frame(
   Code = big.table.cumsum$Code
 )
 
-p1 <- ggplot(pca_df, aes(x = PC1, y = PC2, color = Code, label = Code)) +
+pca1 <- ggplot(pca_df, aes(x = PC1, y = PC2, color = Code, label = Code)) +
   geom_point(size = 3) +  # Points with a size of 3
   labs(title = "PCA: PC1 vs PC2",
        x = "Principal Component 1",
@@ -113,7 +114,7 @@ loadings$Variable <- rownames(loadings)  # Add variable names for plotting
 
 
 # Plot PCA scores and loadings (biplot)
-p2 <- ggplot(pca_df, aes(x = PC1, y = PC2, color = Code)) +
+pca2 <- ggplot(pca_df, aes(x = PC1, y = PC2, color = Code)) +
   geom_point(size = 3) +  # Plot points for each sample
   geom_segment(data = loadings, 
                aes(x = 0, y = 0, xend = PC1 * 3, yend = PC2 * 3), 
@@ -128,7 +129,7 @@ p2 <- ggplot(pca_df, aes(x = PC1, y = PC2, color = Code)) +
   theme_minimal() +
   theme(legend.position = "none")
 
-p2 + p1
+p3 <- pca2 + pca1
 
 ##
 
@@ -156,13 +157,13 @@ pca_df$cluster <- as.factor(membership(clusters))
 pca_df$Code <- big.table.cumsum$Code
 
 # Plot results
-p1 <- ggplot(pca_df, aes(x = PC1, y = PC2, color = cluster, label = Code)) +
+pca1_clusters <- ggplot(pca_df, aes(x = PC1, y = PC2, color = cluster, label = Code)) +
   geom_point(size = 3) +
   labs(title = "kNN Graph-Based Clustering") +
   geom_text_repel() +
   theme_minimal()
 
-p2 <- ggplot(pca_df, aes(x = PC1, y = PC2, color = cluster)) +
+pca2_clusters <- ggplot(pca_df, aes(x = PC1, y = PC2, color = cluster)) +
   geom_point(size = 3) +  # Plot points for each sample
   geom_segment(data = loadings, 
                aes(x = 0, y = 0, xend = PC1 * 3, yend = PC2 * 3), 
@@ -177,7 +178,7 @@ p2 <- ggplot(pca_df, aes(x = PC1, y = PC2, color = cluster)) +
   theme_minimal() +
   theme(legend.position = "none")
 
-p1 + p2
+p4 <- pca1_clusters + pca2_clusters
 
 big.table %>% filter(Period == "1950-1954") %>% 
   select(where(is.numeric), Code) %>% 
@@ -193,14 +194,14 @@ latin_america_map <- world[world$name %in% big.table$Entity, ]
 latin_america_map <- left_join(latin_america_map, big.table, by = c("name" = "Entity"))
 
 # Plot the world map
-latin_america_map %>% filter(Period == "1950-1954") %>% 
+p5 <- latin_america_map %>% filter(Period == "1950-1954") %>% 
 ggplot(aes(fill = `Rigorous and impartial public administration (best estimate, aggregate: average)`)) +
   geom_sf(color = "black") +
   labs(title = "World Map with ggplot2") +
   theme_minimal() +
   theme(legend.position = "bottom")
 
-
-
+ggplotly(p5)
 # Algun grafico de barras en periodo definido que se pueda ir cambiando el periodo con la barra
-# alg'un grafico tipo venn paises en comun que comparten ... y ahi variables cuali.
+
+# algun grafico tipo venn paises en comun que comparten ... y ahi variables cuali.
