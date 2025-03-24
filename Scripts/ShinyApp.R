@@ -1,5 +1,6 @@
 library(shiny)
 library(shinydashboard)
+library(shinyWidgets)
 library(plotly)
 
 library(tidyverse)
@@ -16,15 +17,71 @@ library(RColorBrewer)
 
 setwd("C:/Users/Mariano/Documents/Cami/SocialResearch")
 
-ui <- dashboardPage(
-  dashboardHeader(title = "LAM LGBTQ+ Tolerance"),
-  dashboardSidebar(
-    sidebarMenu(
-      menuItem("Inputs", tabName = "inputs", icon = icon("sliders-h")),
-      sliderInput("obs", "Number of Observations:", min = 10, max = 100, value = 50)
-    )
-  ),
-  dashboardBody(
+files <- list.files("Data", recursive = T)
+files <- grep(".csv", files, value = T)
+files <- grep("./", files, value = T)
+
+tables <- lapply(paste0("Data/", files), read_csv)
+
+tables <- lapply(tables, mutate,  Period = paste0(
+  floor((Year - 1950) / 5) * 5 + 1950, 
+  "-", 
+  floor((Year - 1950) / 5) * 5 + 1954
+))
+
+tables <- lapply(tables, select, -c(Year, Code))
+
+LAM <- c("Argentina", "Bolivia", "Brasil", "Chile", "Colombia", "Costa Rica", "Cuba", "Ecuador", "El Salvador", "Guatemala", "Honduras", "Mexico", "Nicaragua", "Panama", "Paraguay", "Peru", "Republica Dominicana", "Uruguay", "Venezuela")
+
+LAM_urb <- paste0(LAM, " (urban)")
+LAM <- c(LAM, LAM_urb)
+
+Code <- rep(c("ARG", "BOL", "BRA", "CHI", "COL", "CR", "CU", "ECU", "SAL", "GUA", "HON", "MEX", "NIC", "PAN", "PAR", "PE", "DOM", "URU", "VEN"), 2)
+Colors <- c(rep(brewer.pal(n = 9, name = "Set1"), 2), "#4DAF4A")
+names(Colors) <- Code[1:19]
+
+years <- 1950:2022
+
+# Stratify years into periods of 5 years
+# Create a data frame with years and corresponding periods
+stratified_years <- data.frame(
+  Year = years,
+  Period = paste0(
+    floor((years - 1950) / 5) * 5 + 1950, 
+    "-", 
+    floor((years - 1950) / 5) * 5 + 1954
+  )
+)
+
+Periods <- unique(stratified_years$Period)
+big.table <- data.frame(
+  Entity = rep(LAM, each = length(Periods)), 
+  Code = rep(Code, each = length(Periods)),
+  Period = rep(Periods, time = length(LAM)))
+
+for (i in 1:length(tables)){
+  big.table <-  left_join(big.table, tables[[i]], by = c("Entity", "Period")) 
+}
+
+Literacy.dt <- group_by(big.table, Code, Period) %>% summarize(Literacy = mean(`Literacy rate`, na.rm = T)) %>%  ungroup()
+Literacy.dt <- mutate(Literacy.dt, Period = as.numeric(str_split_i(Literacy.dt$Period, "-", 2)))
+
+ggplot(Literacy.dt, aes(x= Period, color = Code)) +
+  geom_line(aes(y = Literacy)) +
+  scale_color_manual(values = Colors)
+
+# ui <- dashboardPage(
+#   dashboardHeader(title = "LAM LGBTQ+ Tolerance"),
+#   dashboardSidebar(
+#     sidebarMenu(
+#       menuItem("Inputs", tabName = "inputs", icon = icon("sliders-h")),
+#       selectInput("period", "Period:", choices = unique(big.table$Period), selected = "2020-2024")
+#     )
+#   ),
+
+ui <- fluidPage(
+  titlePanel("LAM LGBTQ+ Tolerance"),
+  mainPanel(
     fluidRow(
       #style = "margin: 0 -10px;",
       column(6, style = "padding-right: 10px;",
@@ -33,7 +90,11 @@ ui <- dashboardPage(
              plotlyOutput("plot2", height = "190px")
       ),
       column(6, style = "padding-left: 10px;",
-             plotlyOutput("bigPlot", height = "400px")
+             plotlyOutput("bigPlot", height = "400px"),
+             # Slider input acting as timeline
+             sliderTextInput("period", "Period:", 
+                             choices = unique(big.table$Period), 
+                             selected = "2020-2024")
       )
     ),
     br(),
@@ -50,58 +111,6 @@ ui <- dashboardPage(
 server <- function(input, output) {
   setwd("C:/Users/Mariano/Documents/Cami/SocialResearch")
   
-  files <- list.files("Data", recursive = T)
-  files <- grep(".csv", files, value = T)
-  files <- grep("./", files, value = T)
-  
-  tables <- lapply(paste0("Data/", files), read_csv)
-  
-  tables <- lapply(tables, mutate,  Period = paste0(
-    floor((Year - 1950) / 5) * 5 + 1950, 
-    "-", 
-    floor((Year - 1950) / 5) * 5 + 1954
-  ))
-  
-  tables <- lapply(tables, select, -c(Year, Code))
-  
-  LAM <- c("Argentina", "Bolivia", "Brasil", "Chile", "Colombia", "Costa Rica", "Cuba", "Ecuador", "El Salvador", "Guatemala", "Honduras", "Mexico", "Nicaragua", "Panama", "Paraguay", "Peru", "Republica Dominicana", "Uruguay", "Venezuela")
-  
-  LAM_urb <- paste0(LAM, " (urban)")
-  LAM <- c(LAM, LAM_urb)
-  
-  Code <- rep(c("ARG", "BOL", "BRA", "CHI", "COL", "CR", "CU", "ECU", "SAL", "GUA", "HON", "MEX", "NIC", "PAN", "PAR", "PE", "DOM", "URU", "VEN"), 2)
-  Colors <- c(rep(brewer.pal(n = 9, name = "Set1"), 2), "#4DAF4A")
-  names(Colors) <- Code[1:19]
-  
-  years <- 1950:2022
-  
-  # Stratify years into periods of 5 years
-  # Create a data frame with years and corresponding periods
-  stratified_years <- data.frame(
-    Year = years,
-    Period = paste0(
-      floor((years - 1950) / 5) * 5 + 1950, 
-      "-", 
-      floor((years - 1950) / 5) * 5 + 1954
-    )
-  )
-  
-  Periods <- unique(stratified_years$Period)
-  big.table <- data.frame(
-    Entity = rep(LAM, each = length(Periods)), 
-    Code = rep(Code, each = length(Periods)),
-    Period = rep(Periods, time = length(LAM)))
-  
-  for (i in 1:length(tables)){
-    big.table <-  left_join(big.table, tables[[i]], by = c("Entity", "Period")) 
-  }
-  
-  Literacy.dt <- group_by(big.table, Code, Period) %>% summarize(Literacy = mean(`Literacy rate`, na.rm = T)) %>%  ungroup()
-  Literacy.dt <- mutate(Literacy.dt, Period = as.numeric(str_split_i(Literacy.dt$Period, "-", 2)))
-  
-  ggplot(Literacy.dt, aes(x= Period, color = Code)) +
-    geom_line(aes(y = Literacy)) +
-    scale_color_manual(values = Colors)
   
   p1 <- ggplot(filter(Literacy.dt, !is.nan(Literacy)), aes(x= Period, color = Code)) +
     geom_line(aes(y = Literacy)) +
@@ -110,6 +119,8 @@ server <- function(input, output) {
   
   
   ## Correlation Literacy and homosexual couples good parents...
+  output$plot2 <- renderPlotly({
+
   LiteracyTolerance.dt <- filter(big.table, Period %in% c("2020-2024")) %>% group_by(Code) %>% summarize(Literacy = mean(`Literacy rate`, na.rm = T), Tolerance = mean(`Homosexual couples are as good parents as other couples: Agree (aggregate)`, na.rm = T), Education_GDP = mean(`Public spending on education as a share of GDP`, na.rm = T)) %>%  ungroup() %>% na.omit()
   
   LiteracyTolerance.dt$log_Tolerance <- log(LiteracyTolerance.dt$Tolerance)
@@ -127,6 +138,8 @@ server <- function(input, output) {
     geom_point() +
     scale_color_manual(values = Colors) +
     theme_classic()
+  
+  ggplotly(p2)})
   
   big.table.cumsum <- select(big.table, -Entity, -`990179-annotations`, -`935623-annotations`, -Period) %>% mutate(`LGBT+ employment discrimination (historical)` = as.numeric(factor(`LGBT+ employment discrimination (historical)`))) %>% group_by(Code) %>% summarise_all(sum, na.rm =  T)
   
@@ -225,11 +238,11 @@ server <- function(input, output) {
   
   p4 <- pca1_clusters + pca2_clusters
   
-  big.table %>% filter(Period == "1950-1954") %>% 
-    select(where(is.numeric), Code) %>% 
-    pivot_longer(cols = -Code) %>%  
-    ggplot(aes(x = value, y = name)) +
-    geom_density_ridges(alpha = 0.7)
+  # big.table %>% filter(Period == period_filter) %>% 
+  #   select(where(is.numeric), Code) %>% 
+  #   pivot_longer(cols = -Code) %>%  
+  #   ggplot(aes(x = value, y = name)) +
+  #   geom_density_ridges(alpha = 0.7)
   
   
   # Load world map data
@@ -238,9 +251,15 @@ server <- function(input, output) {
   
   latin_america_map <- left_join(latin_america_map, big.table, by = c("name" = "Entity"))
   
+  filtered_map_data <- reactive({
+    req(input$period)
+    latin_america_map %>% filter(Period == input$period)})
+  
   # Plot the world map
-  p5 <- latin_america_map %>% filter(Period == "1950-1954") %>% 
-    ggplot(aes(fill = `Rigorous and impartial public administration (best estimate, aggregate: average)`,
+  output$bigPlot <- renderPlotly({
+    df <- filtered_map_data()
+    req(nrow(df) > 0)
+    p5 <- ggplot(df, aes(fill = `Rigorous and impartial public administration (best estimate, aggregate: average)`,
                text = `Rigorous and impartial public administration (best estimate, aggregate: average)`,
                label = Code)) +
     geom_sf(color = "black") +
@@ -249,49 +268,10 @@ server <- function(input, output) {
     theme_minimal(base_line_size = 0, base_rect_size = 0) +
     theme(axis.text = element_blank(),  legend.title = element_text(size = 0, angle = -90)) +
     guides(fill = guide_colorbar(barwidth = 15, barheight = 0.5, direction = "horizontal", position = "bottom", title.position = "right")) # Ensures a horizontal legend 
-    #theme(legend.position = "bottom")
-  
-  # p5 <- latin_america_map %>% filter(Period == "1950-1954") %>% 
-  #   ggplot(aes(fill = `Rigorous and impartial public administration (best estimate, aggregate: average)`,
-  #              text = `Rigorous and impartial public administration (best estimate, aggregate: average)`,
-  #              label = Code)) +
-  #   #geom_sf(color = "black") +
-  #   geom_col(aes(x=Code, y = 1)) +
-  #   scale_fill_viridis_c() +
-  #   labs(title = "LAM impartial public administration", fill = "administration") +
-  #   theme_minimal(base_line_size = 0, base_rect_size = 0) +
-  #   theme(axis.text = element_blank()) +
-  #   guides(fill = guide_colorbar(barwidth = 15, barheight = 0.5, direction = "horizontal", position = "bottom", title.position = "bottom")) # Ensures a horizontal legend 
-  # #theme(legend.position = "bottom")
-  
-  
+  ggplotly(p5, tooltip = "label")})
+
   
   output$plot1 <- renderPlotly({ggplotly(p1)})
-  output$plot2 <- renderPlotly({ggplotly(p2)})
-  output$bigPlot <- renderPlotly({ggplotly(p5) %>% plotly_build() %>%
-          htmlwidgets::onRender("function(el) {
-        el.querySelector('.modebar-container').style.position = 'relative'; // Adjust height
-      }")})
-  # output$bigPlot <- renderPlotly({
-  #   # Create the ggplotly object (without layout() for now)
-  #   p <- ggplotly(p5, tooltip = c("text", "label")) %>%
-  #     htmlwidgets::onRender("function(el) {
-  #   el.querySelector('.modebar-container').style.position = 'relative'; // Adjust height
-  # }") %>%
-  #   
-  #   # Apply legend settings directly to the plotly object
-  #   layout(
-  #     legend = list(
-  #     orientation = "h",
-  #     x = 0.5, 
-  #     y = -12000  # Adjust as needed
-  #   ),
-  #     margin = list(b = 0.001, l = 0, r = 0, t = 0.001),
-  #     height = 400)
-  #   
-  #   # Return the modified plotly object
-  #   p 
-  # })
   output$plot3 <- renderPlotly({ggplotly(p3)})
   output$plot4 <- renderPlotly({ggplotly(p4)})
 }
